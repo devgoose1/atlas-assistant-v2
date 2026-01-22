@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
 use std::sync::Mutex;
 
@@ -9,15 +10,58 @@ use tauri::{Manager, RunEvent};
 #[derive(Default)]
 struct BackendProcess(Mutex<Option<Child>>);
 
+/// Resolve backend working directory relative to the executable.
+/// In dev: from src-tauri/target/debug -> ../../backend/src
+/// In production: backend is bundled as resource next to executable.
+fn backend_dir() -> Option<PathBuf> {
+    let exe_dir = std::env::current_exe().ok()?.parent()?.to_path_buf();
+
+    // Try production path first (bundled resources)
+    let prod_candidate = exe_dir.join("backend").join("src");
+    if prod_candidate.join("main.py").exists() {
+        return Some(prod_candidate);
+    }
+
+    // Fallback to dev path
+    let dev_candidate = exe_dir
+        .join("..")
+        .join("..")
+        .join("backend")
+        .join("src");
+
+    if dev_candidate.join("main.py").exists() {
+        Some(dev_candidate)
+    } else {
+        eprintln!("Backend not found at {:?} or {:?}", prod_candidate, dev_candidate);
+        None
+    }
+}
+
 /// Spawn the Python backend without opening a console window.
 fn spawn_backend() -> Option<Child> {
-    // Backend entry lives in ../backend/src/main.py relative to src-tauri
-    let mut cmd = Command::new("python");
+    let workdir = backend_dir();
+
+    // Try Python 3.12 specifically via launcher, fallback to generic python
+    let python_cmd = if Command::new("py").arg("-3.12").arg("--version").output().is_ok() {
+        vec!["py", "-3.12"]
+    } else if Command::new("python3.12").arg("--version").output().is_ok() {
+        vec!["python3.12"]
+    } else {
+        vec!["python"]
+    };
+
+    let mut cmd = Command::new(python_cmd[0]);
+    if python_cmd.len() > 1 {
+        cmd.arg(python_cmd[1]);
+    }
     cmd.arg("main.py")
-        .current_dir("../backend/src")
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null());
+
+    if let Some(dir) = workdir {
+        cmd.current_dir(dir);
+    }
 
     #[cfg(windows)]
     {
