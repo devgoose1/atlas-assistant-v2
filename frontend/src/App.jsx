@@ -12,6 +12,7 @@ function App() {
   const [notes, setNotes] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [openedModuleId, setOpenedModuleId] = useState(null)
+  const [isClosing, setIsClosing] = useState(false)
   const [fabOpen, setFabOpen] = useState(false)
   const wsRef = useRef(null)
 
@@ -155,8 +156,18 @@ function App() {
 
   const handleOpenModule = () => {
     const module = modules[selectedIndex]
+    setIsClosing(false)
     setOpenedModuleId(module?.id || null)
     setFabOpen(false)
+  }
+
+  const handleCloseModule = () => {
+    setIsClosing(true)
+    setFabOpen(false)
+    setTimeout(() => {
+      setOpenedModuleId(null)
+      setIsClosing(false)
+    }, 500) // Match animation duration
   }
 
   const activeModule = modules.find((m) => m.id === openedModuleId)
@@ -243,7 +254,7 @@ function App() {
       </div>
 
       {ActiveComponent && (
-        <div className="module-overlay">
+        <div className={`module-overlay ${isClosing ? 'closing' : ''}`}>
           <div className="module-overlay__header">
             <div className="module-overlay__title">{activeModule.label}</div>
             <div className="module-overlay__subtitle">Active module</div>
@@ -290,10 +301,7 @@ function App() {
               <button
                 className="fab__item"
                 style={{ '--i': 2 }}
-                onClick={() => {
-                  setOpenedModuleId(null)
-                  setFabOpen(false)
-                }}
+                onClick={handleCloseModule}
                 title="Back to menu"
               >
                 ☰
