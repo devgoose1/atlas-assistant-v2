@@ -263,8 +263,6 @@ function App() {
             <ActiveComponent
               {...(activeModule.props || {})}
               isConnected={isConnected}
-              onAdd={(text) => sendMessage({ type: 'notes/add', text })}
-              onDelete={(id) => sendMessage({ type: 'notes/delete', id })}
               sendMessage={sendMessage}
             />
           </div>
