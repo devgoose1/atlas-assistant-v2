@@ -2,7 +2,59 @@
 
 Een desktop-gebaseerde JARVIS-achtige persoonlijke assistent met een geavanceerde, geanimeede UI.
 
-Dit project is **NIET** een website, maar een lokale desktop applicatie die op je laptop draait.
+Dit project is **NIET** een website, maar een lokale desktop applicatie die op je laptop draait als een **Tauri Desktop App**.
+
+## 🚀 Quick Start
+
+### Vereisten
+
+- **Rust** (voor Tauri): [https://rustup.rs/](https://rustup.rs/)
+- **Node.js** (v18+): [https://nodejs.org/](https://nodejs.org/)
+- **Python** (3.9+)
+
+### Installatie & Eerste Run
+
+1. **Clone de repository**
+
+   ```bash
+   git clone <your-repo>
+   cd atlas-assistant-v2
+   ```
+
+2. **Installeer frontend dependencies**
+
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+3. **Installeer Python dependencies**
+
+   ```bash
+   cd ../backend
+   pip install -r requirements.txt
+   ```
+
+4. **Start de desktop app**
+
+   Vanuit de root directory:
+
+   ```powershell
+   .\start-desktop.ps1
+   ```
+
+   Of manueel:
+   - Terminal 1: `cd backend/src && python main.py`
+   - Terminal 2: `cd frontend && npm run tauri:dev`
+
+### Build voor Productie
+
+```bash
+cd frontend
+npm run tauri:build
+```
+
+De desktop installer wordt gegenereerd in `frontend/src-tauri/target/release/bundle/`
 
 ## Tech Stack Overview
 
