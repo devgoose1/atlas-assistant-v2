@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: linear-gradient(180deg, #0a0e27 0%, #0d1830 50%, #0a0e27 100%);
 }
 
 .background-layer {
@@ -14,10 +15,9 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(30, 100, 200, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(100, 50, 200, 0.1) 0%, transparent 50%);
-  z-index: 0;
+  background: transparent;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .main-interface {
@@ -29,6 +29,7 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+  filter: drop-shadow(0 0 100px rgba(100, 200, 255, 0.15));
 }
 
 .center-orb {
@@ -36,13 +37,15 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.3), rgba(50, 100, 200, 0.2));
-  border: 2px solid rgba(100, 200, 255, 0.5);
-  box-shadow: 0 0 20px rgba(100, 200, 255, 0.4), inset 0 0 20px rgba(100, 200, 255, 0.1);
+  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.2), rgba(50, 100, 200, 0.08));
+  border: 2px solid rgba(100, 200, 255, 0.4);
+  box-shadow: 0 0 30px rgba(100, 200, 255, 0.5), 0 0 60px rgba(100, 200, 255, 0.25), inset 0 0 20px rgba(100, 200, 255, 0.08),
+              0 20px 40px rgba(0, 0, 0, 0.8), 0 0 80px rgba(100, 200, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
 }
 
 /* State-based orb styles */
@@ -139,7 +142,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
   gap: 0;
   margin-top: 40px;
   user-select: none;
@@ -149,9 +152,10 @@
   width: 104px;
   height: 104px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.24), rgba(50, 100, 200, 0.12));
-  border: 1px solid rgba(100, 200, 255, 0.24);
-  box-shadow: 0 0 15px rgba(100, 200, 255, 0.22), inset 0 0 10px rgba(100, 200, 255, 0.08);
+  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.15), rgba(50, 100, 200, 0.05));
+  border: 1.5px solid rgba(100, 200, 255, 0.35);
+  box-shadow: 0 0 20px rgba(100, 200, 255, 0.35), 0 0 40px rgba(100, 200, 255, 0.12), inset 0 0 15px rgba(100, 200, 255, 0.1),
+              0 15px 35px rgba(0, 0, 0, 0.7), 0 0 60px rgba(100, 200, 255, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -159,13 +163,16 @@
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
   position: absolute;
-  filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.28));
+  backdrop-filter: blur(6px);
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.15));
 }
 
 .module-chip.active {
-  box-shadow: 0 0 30px rgba(100, 200, 255, 0.65), inset 0 0 15px rgba(100, 200, 255, 0.25);
-  border-color: rgba(100, 200, 255, 0.8);
-  filter: drop-shadow(0 0 18px rgba(100, 200, 255, 0.5));
+  box-shadow: 0 0 40px rgba(100, 200, 255, 0.8), 0 0 70px rgba(100, 200, 255, 0.4), inset 0 0 20px rgba(100, 200, 255, 0.2),
+              0 20px 45px rgba(0, 0, 0, 0.8), 0 0 100px rgba(100, 200, 255, 0.35);
+  border-color: rgba(100, 200, 255, 0.9);
+  filter: drop-shadow(0 0 20px rgba(100, 200, 255, 0.6));
+  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.25), rgba(50, 100, 200, 0.12));
 }
 
 .module-chip__icon {
@@ -200,16 +207,17 @@
   text-align: center;
   z-index: 20;
   padding: 15px 25px;
-  background: rgba(10, 14, 39, 0.7);
-  border: 1px solid rgba(100, 200, 255, 0.2);
+  background: rgba(6, 8, 20, 0.35);
+  border: 1px solid rgba(100, 200, 255, 0.28);
   border-radius: 8px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
   min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(224, 230, 255, 0.8);
+  color: rgba(224, 230, 255, 0.9);
   font-size: 14px;
+  box-shadow: 0 0 30px rgba(100, 200, 255, 0.15), 0 0 50px rgba(0, 0, 0, 0.25);
 }
 
 .assistant-state {
@@ -378,10 +386,10 @@
   gap: 12px;
   padding: 10px 14px;
   border-radius: 14px;
-  background: rgba(6, 8, 20, 0.65);
-  border: 1px solid rgba(100, 200, 255, 0.22);
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px);
+  background: rgba(6, 8, 20, 0.35);
+  border: 1px solid rgba(100, 200, 255, 0.3);
+  box-shadow: 0 0 30px rgba(100, 200, 255, 0.2), 0 0 50px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px) saturate(1.2);
   z-index: 30;
 }
 
@@ -401,13 +409,15 @@
 .open-btn {
   padding: 10px 22px;
   border-radius: 24px;
-  border: 1px solid rgba(100, 200, 255, 0.5);
-  background: linear-gradient(135deg, rgba(100, 200, 255, 0.6), rgba(50, 150, 255, 0.55));
-  color: rgba(10, 14, 39, 0.9);
+  border: 1.5px solid rgba(100, 200, 255, 0.6);
+  background: linear-gradient(135deg, rgba(100, 200, 255, 0.45), rgba(50, 150, 255, 0.35));
+  color: rgba(224, 230, 255, 0.95);
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 0 18px rgba(100, 200, 255, 0.42);
+  box-shadow: 0 0 25px rgba(100, 200, 255, 0.5), 0 0 50px rgba(100, 200, 255, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  backdrop-filter: blur(8px);
+  text-shadow: 0 0 8px rgba(100, 200, 255, 0.4);
 }
 
 .open-btn:hover {
@@ -424,23 +434,25 @@
 .module-indicator {
   padding: 10px 14px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(100, 200, 255, 0.18);
-  color: rgba(224, 230, 255, 0.82);
+  background: rgba(100, 200, 255, 0.08);
+  border: 1px solid rgba(100, 200, 255, 0.28);
+  color: rgba(224, 230, 255, 0.9);
   min-width: 140px;
   text-align: center;
   letter-spacing: 0.5px;
-  box-shadow: inset 0 0 12px rgba(100, 200, 255, 0.08);
+  box-shadow: 0 0 20px rgba(100, 200, 255, 0.15), inset 0 0 15px rgba(100, 200, 255, 0.06);
+  backdrop-filter: blur(8px);
+  text-shadow: 0 0 6px rgba(100, 200, 255, 0.3);
 }
 
 .module-overlay {
   position: fixed;
   inset: 24px;
-  background: radial-gradient(circle at 20% 20%, rgba(100, 200, 255, 0.06), rgba(6, 8, 20, 0.75));
-  border: 1px solid rgba(100, 200, 255, 0.18);
-  backdrop-filter: blur(18px) saturate(1.1);
+  background: radial-gradient(circle at 20% 20%, rgba(100, 200, 255, 0.04), rgba(6, 8, 20, 0.12));
+  border: 1.5px solid rgba(100, 200, 255, 0.28);
+  backdrop-filter: blur(24px) saturate(1.3);
   border-radius: 18px;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.45), inset 0 0 30px rgba(100, 200, 255, 0.08);
+  box-shadow: 0 0 60px rgba(100, 200, 255, 0.25), 0 0 100px rgba(0, 0, 0, 0.5), inset 0 0 40px rgba(100, 200, 255, 0.06);
   z-index: 40;
   display: flex;
   flex-direction: column;
@@ -491,14 +503,16 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  border: 1px solid rgba(100, 200, 255, 0.4);
-  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.8), rgba(50, 120, 220, 0.7));
-  color: #0a0e27;
+  border: 1.5px solid rgba(100, 200, 255, 0.5);
+  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.7), rgba(50, 120, 220, 0.5));
+  color: #e8f2ff;
   font-size: 26px;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 0 24px rgba(100, 200, 255, 0.5);
+  box-shadow: 0 0 35px rgba(100, 200, 255, 0.6), 0 0 70px rgba(100, 200, 255, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(10px);
+  text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
 }
 
 .fab__main:hover {
@@ -523,23 +537,25 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(100, 200, 255, 0.4);
-  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.75), rgba(50, 120, 220, 0.62));
+  border: 1.5px solid rgba(100, 200, 255, 0.45);
+  background: radial-gradient(circle at 30% 30%, rgba(100, 200, 255, 0.65), rgba(50, 120, 220, 0.48));
   color: #e8f2ff;
   font-size: 18px;
   font-weight: 700;
-  box-shadow: 0 0 18px rgba(100, 200, 255, 0.45);
+  box-shadow: 0 0 25px rgba(100, 200, 255, 0.5), 0 0 45px rgba(100, 200, 255, 0.15);
   transform: translate(0, 0) scale(0.6);
   opacity: 0;
   pointer-events: none;
   transition: transform 0.2s ease, opacity 0.2s ease;
- }
- 
- .fab.open .fab__item {
-   opacity: 1;
-   transform: rotate(calc(225deg - var(--i) * 40deg)) translate(100px) rotate(calc(var(--i) * 40deg - 225deg)) scale(1);
-   pointer-events: auto;
-   cursor: pointer;
+  backdrop-filter: blur(8px);
+  text-shadow: 0 0 8px rgba(100, 200, 255, 0.4);
+}
+
+.fab.open .fab__item {
+  opacity: 1;
+  transform: rotate(calc(225deg - var(--i) * 40deg)) translate(100px) rotate(calc(var(--i) * 40deg - 225deg)) scale(1);
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .fab__item:hover {
