@@ -12,6 +12,7 @@ function App() {
   const [notes, setNotes] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [openedModuleId, setOpenedModuleId] = useState(null)
+  const [fabOpen, setFabOpen] = useState(false)
   const wsRef = useRef(null)
 
   // Define available modules (each own component file)
@@ -155,6 +156,7 @@ function App() {
   const handleOpenModule = () => {
     const module = modules[selectedIndex]
     setOpenedModuleId(module?.id || null)
+    setFabOpen(false)
   }
 
   const activeModule = modules.find((m) => m.id === openedModuleId)
@@ -192,14 +194,16 @@ function App() {
           {modules.map((module, idx) => {
             const offset = idx - selectedIndex
             const normalized = ((offset + modules.length + Math.floor(modules.length / 2)) % modules.length) - Math.floor(modules.length / 2)
-            const scale = normalized === 0 ? 1 : 0.8
-            const opacity = normalized === 0 ? 1 : 0.6
-            const translate = normalized * 110
+            const distance = Math.abs(normalized)
+            const scale = normalized === 0 ? 1.1 : 0.82
+            const opacity = normalized === 0 ? 1 : 0.45
+            const translate = normalized * 52
+            const zIndex = modules.length - distance
             return (
               <div
                 key={module.id}
                 className={`module-chip ${normalized === 0 ? 'active' : ''}`}
-                style={{ transform: `translateX(${translate}px) scale(${scale})`, opacity }}
+                style={{ transform: `translateX(${translate}px) scale(${scale})`, opacity, zIndex }}
                 onClick={() => setSelectedIndex(idx)}
               >
                 <div className="module-chip__icon">{module.icon}</div>
@@ -239,14 +243,63 @@ function App() {
       </div>
 
       {ActiveComponent && (
-        <div className="module-shell">
-          <ActiveComponent
-            {...(activeModule.props || {})}
-            isConnected={isConnected}
-            onAdd={(text) => sendMessage({ type: 'notes/add', text })}
-            onDelete={(id) => sendMessage({ type: 'notes/delete', id })}
-            sendMessage={sendMessage}
-          />
+        <div className="module-overlay">
+          <div className="module-overlay__header">
+            <div className="module-overlay__title">{activeModule.label}</div>
+            <div className="module-overlay__subtitle">Active module</div>
+          </div>
+          <div className="module-overlay__content">
+            <ActiveComponent
+              {...(activeModule.props || {})}
+              isConnected={isConnected}
+              onAdd={(text) => sendMessage({ type: 'notes/add', text })}
+              onDelete={(id) => sendMessage({ type: 'notes/delete', id })}
+              sendMessage={sendMessage}
+            />
+          </div>
+
+          <div className={`fab ${fabOpen ? 'open' : ''}`}>
+            <button className="fab__main" onClick={() => setFabOpen((v) => !v)}>
+              {fabOpen ? '×' : '⋯'}
+            </button>
+            <div className="fab__items">
+              <button
+                className="fab__item"
+                style={{ '--i': 0 }}
+                onClick={() => {
+                  sendMessage({ type: 'notes/list' })
+                  sendMessage({ type: 'get_system_info' })
+                  setFabOpen(false)
+                }}
+                title="Refresh"
+              >
+                ↻
+              </button>
+              <button
+                className="fab__item"
+                style={{ '--i': 1 }}
+                onClick={() => {
+                  setAssistantState('IDLE')
+                  sendMessage({ type: 'change_state', state: 'IDLE' })
+                  setFabOpen(false)
+                }}
+                title="Set IDLE"
+              >
+                ◎
+              </button>
+              <button
+                className="fab__item"
+                style={{ '--i': 2 }}
+                onClick={() => {
+                  setOpenedModuleId(null)
+                  setFabOpen(false)
+                }}
+                title="Back to menu"
+              >
+                ☰
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
