@@ -2,6 +2,9 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import NoteModule from './modules/NoteModule'
 import SystemModule from './modules/SystemModule'
 import ModuleTemplate from './modules/ModuleTemplate'
+import HardwareModule from './modules/HardwareModule'
+import SettingsModule from './modules/SettingsModule'
+import CircuitDesigner from './modules/CircuitDesigner'
 import './App.css'
 
 function App() {
@@ -10,6 +13,9 @@ function App() {
   const [isConnected, setIsConnected] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString())
   const [notes, setNotes] = useState([])
+  const [hardwareParts, setHardwareParts] = useState([])
+  const [hardwareMeta, setHardwareMeta] = useState({})
+  const [hardwareSync, setHardwareSync] = useState(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [openedModuleId, setOpenedModuleId] = useState(null)
   const [isClosing, setIsClosing] = useState(false)
@@ -33,13 +39,34 @@ function App() {
       props: { systemInfo },
     },
     {
+      id: 'hardware',
+      label: 'Hardware',
+      icon: '🔌',
+      component: HardwareModule,
+      props: { parts: hardwareParts, meta: hardwareMeta },
+    },
+    {
+      id: 'designer',
+      label: 'Designer',
+      icon: '🔧',
+      component: CircuitDesigner,
+      props: {},
+    },
+    {
+      id: 'settings',
+      label: 'Instellingen',
+      icon: '⚙️',
+      component: SettingsModule,
+      props: { hardwareSync },
+    },
+    {
       id: 'template',
       label: 'Template',
       icon: '✨',
       component: ModuleTemplate,
       props: {},
     },
-  ]), [notes, systemInfo])
+  ]), [notes, systemInfo, hardwareParts, hardwareMeta, hardwareSync])
 
   // WebSocket connection
   useEffect(() => {
@@ -80,6 +107,23 @@ function App() {
               break
             case 'notes/error':
               console.warn('Notes error:', data.message)
+              break
+            case 'hardware/parts/list':
+            case 'hardware/parts/search':
+              setHardwareParts(data.parts || [])
+              setHardwareMeta(data.meta || {})
+              break
+            case 'hardware/import/status':
+              setHardwareSync({ message: data.message, summary: data.summary })
+              sendMessage({ type: 'hardware/parts/list' })
+              break
+            case 'hardware/error':
+              console.warn('Hardware error:', data.message)
+              break
+            case 'hardware/circuits/saved':
+            case 'hardware/circuits/loaded':
+            case 'hardware/circuits/deleted':
+              console.log('Circuit operation:', data.type)
               break
             default:
               console.log('Unknown message type:', data.type)
@@ -137,6 +181,7 @@ function App() {
   useEffect(() => {
     if (isConnected && wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: 'notes/list' }))
+      wsRef.current.send(JSON.stringify({ type: 'hardware/parts/list' }))
     }
   }, [isConnected])
 

@@ -19,6 +19,7 @@ import psutil
 
 from websocket_server import WebSocketServer
 from modules.notes import NoteModule
+from modules.hardware import HardwareModule
 
 # Configure logging
 logging.basicConfig(
@@ -119,6 +120,9 @@ async def main():
     # Register modules
     note_module = NoteModule()
     note_module.register(ws_server.register_handler)
+
+    hardware_module = HardwareModule()
+    hardware_module.register(ws_server.register_handler)
     
     # Start WebSocket server
     try:

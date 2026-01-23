@@ -159,7 +159,7 @@ CODING EXPECTATIONS FOR COPILOT
 --------------------------------
 
 When generating code:
-- Prefer modular, readable components
+- Prefer modular, readable components (So every module is a seperate file!)
 - Avoid overengineering
 - Favor clarity over cleverness
 - Keep logic separated from UI
